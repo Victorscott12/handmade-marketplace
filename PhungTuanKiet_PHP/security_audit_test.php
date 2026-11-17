@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($demoType === 'sqli') {
         try {
             // SAFE IMPLEMENTATION: PDO Prepared Statement with bound parameters
-            $stmt = $pdo->prepare('SELECT id, title, price, status FROM products WHERE title LIKE :title LIMIT 5');
+            $stmt = $pdo->prepare('SELECT id, name, name AS title, price, status FROM products WHERE name LIKE :title LIMIT 5');
             $stmt->execute([':title' => '%' . $sqliInput . '%']);
             $sqliResult = $stmt->fetchAll();
         } catch (PDOException $e) {
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php else: ?>
                             <ul class="mb-0 small font-monospace ps-3">
                                 <?php foreach ($sqliResult as $row): ?>
-                                    <li>ID: <?= (int)$row['id'] ?> | Title: <?= e($row['title']) ?> | Price: $<?= number_format((float)$row['price'], 2) ?></li>
+                                    <li>ID: <?= (int)$row['id'] ?> | Artwork: <?= e($row['name'] ?? $row['title'] ?? 'Artwork') ?> | Price: $<?= number_format((float)$row['price'], 2) ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         <?php endif; ?>

@@ -30,6 +30,7 @@ CREATE TABLE `users` (
     `full_name` VARCHAR(100) NOT NULL,
     `role` ENUM('buyer', 'seller', 'admin') NOT NULL DEFAULT 'buyer',
     `status` ENUM('active', 'locked') NOT NULL DEFAULT 'active',
+    `avatar_url` VARCHAR(255) NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -94,6 +95,7 @@ CREATE TABLE `orders` (
     `buyer_id` INT NOT NULL,
     `total_amount` DECIMAL(12, 2) NOT NULL,
     `status` ENUM('pending', 'processing', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    `payment_status` ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'paid',
     `shipping_address` TEXT NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_orders_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -172,15 +174,15 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `icon`, `created_
 
 -- 4. Products (Approved and Pending)
 INSERT INTO `products` (`id`, `seller_id`, `category_id`, `name`, `slug`, `description`, `price`, `stock`, `image_url`, `craft_material`, `status`, `created_at`) VALUES
-(1, 2, 1, 'Artisan Stoneware Speckled Ceramic Mug', 'artisan-stoneware-speckled-ceramic-mug', 'Hand-thrown on the potter wheel with high-fire speckled stoneware. Finished in a soft matte oatmeal glaze with raw toasted clay bottom. Holds approx 350ml of your favorite coffee or tea. Microwave and dishwasher safe.', 28.50, 15, 'assets/images/mug.jpg', 'Stoneware Clay & Food-safe Glaze', 'approved', '2026-01-20 10:00:00'),
-(2, 2, 1, 'Rustic Terracotta Ikebana Flower Vase', 'rustic-terracotta-ikebana-flower-vase', 'Minimalist hand-coiled ceramic vase with an organic sculpted silhouette. Designed for Japanese Ikebana single-stem arrangements. Sealed interior holds water effortlessly.', 42.00, 8, 'assets/images/vase.jpg', 'Natural Terracotta Clay', 'approved', '2026-02-05 11:30:00'),
-(3, 3, 4, 'Chunky Merino Wool Hand-Knit Blanket', 'chunky-merino-wool-hand-knit-blanket', 'Extra-soft arm-knitted throw blanket crafted from 100% natural cruelty-free Merino wool roving. Ultra-breathable, thermo-regulating, and adds luxurious warmth to any sofa or bedroom.', 135.00, 5, 'assets/images/blanket.jpg', '100% Pure Merino Wool', 'approved', '2026-02-15 14:20:00'),
-(4, 3, 4, 'Hand-Dyed Alpaca Cable Knit Winter Beanie', 'hand-dyed-alpaca-cable-knit-winter-beanie', 'Seamless classic cable beanie knit with baby alpaca and silk yarn. Naturally botanical-dyed using avocado pits for a gentle dusky rose hue.', 36.00, 20, 'assets/images/beanie.jpg', 'Baby Alpaca & Mulberry Silk', 'approved', '2026-02-22 16:00:00'),
-(5, 4, 5, 'Live-Edge Black Walnut Serving Platter', 'live-edge-black-walnut-serving-platter', 'Carved from salvaged American black walnut timber with natural live bark accents. Finished with organic food-safe beeswax and cold-pressed mineral oil.', 68.00, 7, 'assets/images/platter.jpg', 'Salvaged Black Walnut & Beeswax', 'approved', '2026-02-28 13:45:00'),
-(6, 4, 5, 'Hand-Carved Cherry Wood Cooking Spoon Set', 'hand-carved-cherry-wood-cooking-spoon-set', 'Trio of hand-carved cooking spoons with ergonomic teardrop handles and deep stir bowls. Carved using traditional gouges and finished smoothly.', 34.00, 12, 'assets/images/spoons.jpg', 'Pennsylvania Cherry Wood', 'approved', '2026-03-05 17:10:00'),
+(1, 2, 1, 'Artisan Stoneware Speckled Ceramic Mug', 'artisan-stoneware-speckled-ceramic-mug', 'Hand-thrown on the potter wheel with high-fire speckled stoneware. Finished in a soft matte oatmeal glaze with raw toasted clay bottom. Holds approx 350ml of your favorite coffee or tea. Microwave and dishwasher safe.', 28.50, 15, 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80', 'Stoneware Clay & Food-safe Glaze', 'approved', '2026-01-20 10:00:00'),
+(2, 2, 1, 'Rustic Terracotta Ikebana Flower Vase', 'rustic-terracotta-ikebana-flower-vase', 'Minimalist hand-coiled ceramic vase with an organic sculpted silhouette. Designed for Japanese Ikebana single-stem arrangements. Sealed interior holds water effortlessly.', 42.00, 8, 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80', 'Natural Terracotta Clay', 'approved', '2026-02-05 11:30:00'),
+(3, 3, 4, 'Chunky Merino Wool Hand-Knit Blanket', 'chunky-merino-wool-hand-knit-blanket', 'Extra-soft arm-knitted throw blanket crafted from 100% natural cruelty-free Merino wool roving. Ultra-breathable, thermo-regulating, and adds luxurious warmth to any sofa or bedroom.', 135.00, 5, 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80', '100% Pure Merino Wool', 'approved', '2026-02-15 14:20:00'),
+(4, 3, 4, 'Hand-Dyed Alpaca Cable Knit Winter Beanie', 'hand-dyed-alpaca-cable-knit-winter-beanie', 'Seamless classic cable beanie knit with baby alpaca and silk yarn. Naturally botanical-dyed using avocado pits for a gentle dusky rose hue.', 36.00, 20, 'https://images.unsplash.com/photo-1576871337622-98d48d1cf531?auto=format&fit=crop&w=800&q=80', 'Baby Alpaca & Mulberry Silk', 'approved', '2026-02-22 16:00:00'),
+(5, 4, 5, 'Live-Edge Black Walnut Serving Platter', 'live-edge-black-walnut-serving-platter', 'Carved from salvaged American black walnut timber with natural live bark accents. Finished with organic food-safe beeswax and cold-pressed mineral oil.', 68.00, 7, 'https://images.unsplash.com/photo-1615865417491-9941019fbc00?auto=format&fit=crop&w=800&q=80', 'Salvaged Black Walnut & Beeswax', 'approved', '2026-02-28 13:45:00'),
+(6, 4, 5, 'Hand-Carved Cherry Wood Cooking Spoon Set', 'hand-carved-cherry-wood-cooking-spoon-set', 'Trio of hand-carved cooking spoons with ergonomic teardrop handles and deep stir bowls. Carved using traditional gouges and finished smoothly.', 34.00, 12, 'https://images.unsplash.com/photo-1590736969955-71cc94801759?auto=format&fit=crop&w=800&q=80', 'Pennsylvania Cherry Wood', 'approved', '2026-03-05 17:10:00'),
 -- Pending approval products for Admin approval tab
-(7, 2, 1, 'Porcelain Pour-Over Coffee Dripper Cone', 'porcelain-pour-over-coffee-dripper-cone', 'Wheel-thrown porcelain coffee dripper featuring spiral interior extraction ridges. Requires standard #2 cone paper filters.', 38.00, 10, 'assets/images/dripper.jpg', 'Limoges Porcelain Clay', 'pending', '2026-03-24 09:15:00'),
-(8, 3, 4, 'Bohemian Macrame Botanical Wall Hanging', 'bohemian-macrame-botanical-wall-hanging', 'Intricate bohemian wall art knotted with unbleached 4mm cotton rope on a weathered ocean driftwood branch.', 55.00, 6, 'assets/images/macrame.jpg', 'Organic Cotton & Ocean Driftwood', 'pending', '2026-03-25 15:40:00');
+(7, 2, 1, 'Porcelain Pour-Over Coffee Dripper Cone', 'porcelain-pour-over-coffee-dripper-cone', 'Wheel-thrown porcelain coffee dripper featuring spiral interior extraction ridges. Requires standard #2 cone paper filters.', 38.00, 10, 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 'Limoges Porcelain Clay', 'pending', '2026-03-24 09:15:00'),
+(8, 3, 4, 'Bohemian Macrame Botanical Wall Hanging', 'bohemian-macrame-botanical-wall-hanging', 'Intricate bohemian wall art knotted with unbleached 4mm cotton rope on a weathered ocean driftwood branch.', 55.00, 6, 'https://images.unsplash.com/photo-1528458988180-60b64d6db875?auto=format&fit=crop&w=800&q=80', 'Organic Cotton & Ocean Driftwood', 'pending', '2026-03-25 15:40:00');
 
 -- 5. Orders (Completed and Processing)
 INSERT INTO `orders` (`id`, `order_number`, `buyer_id`, `total_amount`, `status`, `shipping_address`, `created_at`) VALUES

@@ -18,7 +18,7 @@ $totalOrders = (int)$pdo->query('SELECT COUNT(*) FROM orders')->fetchColumn();
 $totalRevenue = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status = 'completed'")->fetchColumn();
 
 // Pending Counts
-$pendingSellers = (int)$pdo->query("SELECT COUNT(*) FROM seller_profiles WHERE verification_status = 'pending'")->fetchColumn();
+$pendingSellers = (int)$pdo->query("SELECT COUNT(*) FROM seller_profiles WHERE status = 'pending'")->fetchColumn();
 $pendingProducts = (int)$pdo->query("SELECT COUNT(*) FROM products WHERE status = 'pending'")->fetchColumn();
 $totalPending = $pendingSellers + $pendingProducts;
 

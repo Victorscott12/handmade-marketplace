@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($seller) {
             $newStatus = ($decision === 'approve') ? 'approved' : 'rejected';
-            $update = $pdo->prepare('UPDATE seller_profiles SET verification_status = :status WHERE id = :id');
+            $update = $pdo->prepare('UPDATE seller_profiles SET status = :status WHERE id = :id');
             $update->execute([':status' => $newStatus, ':id' => $profileId]);
 
             // When approved, promote user role to 'seller' if not already
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($actionType === 'product') {
         $productId = (int)($_POST['product_id'] ?? 0);
-        $stmt = $pdo->prepare('SELECT id, title, price FROM products WHERE id = :id LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, name, name AS title, price FROM products WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => $productId]);
         $product = $stmt->fetch();
 
@@ -65,10 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update = $pdo->prepare('UPDATE products SET status = :status, updated_at = NOW() WHERE id = :id');
             $update->execute([':status' => $newStatus, ':id' => $productId]);
 
+            $pName = $product['name'] ?? $product['title'] ?? 'Product';
             if ($decision === 'approve') {
-                setFlash('success', "Product item <strong>" . e($product['title']) . "</strong> has been approved and published to the marketplace.");
+                setFlash('success', "Product item <strong>" . e($pName) . "</strong> has been approved and published to the marketplace.");
             } else {
-                setFlash('warning', "Product item <strong>" . e($product['title']) . "</strong> was rejected.");
+                setFlash('warning', "Product item <strong>" . e($pName) . "</strong> was rejected.");
             }
         } else {
             setFlash('danger', 'Product record not found.');
@@ -84,14 +85,14 @@ $sellersStmt = $pdo->query("
     SELECT sp.*, u.full_name, u.email, u.avatar_url
     FROM seller_profiles sp
     JOIN users u ON sp.user_id = u.id
-    WHERE sp.verification_status = 'pending'
+    WHERE sp.status = 'pending'
     ORDER BY sp.created_at ASC
 ");
 $pendingSellersList = $sellersStmt->fetchAll();
 
 // 2. Fetch Pending Products
 $productsStmt = $pdo->query("
-    SELECT p.*, c.name AS category_name, u.full_name AS seller_name, sp.store_name
+    SELECT p.*, p.name AS title, p.stock AS stock_quantity, c.name AS category_name, u.full_name AS seller_name, sp.store_name
     FROM products p
     JOIN categories c ON p.category_id = c.id
     JOIN users u ON p.seller_id = u.id
@@ -246,7 +247,7 @@ $pendingProductsList = $productsStmt->fetchAll();
                                     <img src="<?= e($p['image_url'] ?: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=120&q=80') ?>" class="rounded-2 border" width="60" height="60" style="object-fit: cover;" alt="Product">
                                 </td>
                                 <td style="max-width: 260px;">
-                                    <div class="fw-bold text-dark"><?= e($p['title']) ?></div>
+                                    <div class="fw-bold text-dark"><?= e($p['name'] ?? $p['title'] ?? 'Artwork') ?></div>
                                     <p class="small text-muted mb-0 text-truncate" title="<?= e($p['description'] ?? '') ?>">
                                         <?= e($p['description'] ?? '') ?>
                                     </p>
@@ -262,7 +263,7 @@ $pendingProductsList = $productsStmt->fetchAll();
                                 </td>
                                 <td>
                                     <div class="fw-bold text-dark">$<?= number_format((float)$p['price'], 2) ?></div>
-                                    <div class="small text-muted font-monospace">Qty: <?= (int)$p['stock_quantity'] ?></div>
+                                    <div class="small text-muted font-monospace">Qty: <?= (int)($p['stock'] ?? $p['stock_quantity'] ?? 0) ?></div>
                                 </td>
                                 <td class="text-muted small">
                                     <?= date('M d, Y', strtotime($p['created_at'])) ?>

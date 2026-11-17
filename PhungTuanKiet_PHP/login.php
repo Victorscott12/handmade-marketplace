@@ -39,11 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($email) || empty($password)) {
             $errors[] = 'Please fill in both email and password.';
         } else {
-            $stmt = $pdo->prepare('SELECT id, full_name, email, password_hash, role, status FROM users WHERE email = :email LIMIT 1');
+            $stmt = $pdo->prepare('SELECT id, full_name, email, password, password AS password_hash, role, status FROM users WHERE email = :email LIMIT 1');
             $stmt->execute([':email' => $email]);
             $user = $stmt->fetch();
 
-            if ($user && password_verify($password, $user['password_hash'])) {
+            $pwdHash = (string)($user['password'] ?? $user['password_hash'] ?? '');
+            if ($user && password_verify($password, $pwdHash)) {
                 if ($user['status'] === 'locked') {
                     $errors[] = 'This account has been locked by an administrator. Access prohibited.';
                 } else {
@@ -64,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch demo persona accounts for quick buttons
-$demoUsersStmt = $pdo->query("SELECT id, full_name, email, role, status FROM users WHERE email IN ('admin@artisan.test', 'seller.emma@artisan.test', 'buyer.david@artisan.test', 'buyer.frank@artisan.test') ORDER BY FIELD(role, 'admin', 'seller', 'buyer')");
+$demoUsersStmt = $pdo->query("SELECT id, full_name, email, role, status FROM users WHERE id IN (1, 2, 6, 8, 9) ORDER BY FIELD(role, 'admin', 'seller', 'buyer'), id ASC");
 $demoUsers = $demoUsersStmt->fetchAll();
 ?>
 

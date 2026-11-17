@@ -40,7 +40,7 @@ if ($productId <= 0) {
 }
 
 // Verify that the product exists and is active
-$prodStmt = $pdo->prepare('SELECT id, title, status FROM products WHERE id = :id LIMIT 1');
+$prodStmt = $pdo->prepare('SELECT id, name, name AS title, status FROM products WHERE id = :id LIMIT 1');
 $prodStmt->execute([':id' => $productId]);
 $product = $prodStmt->fetch();
 

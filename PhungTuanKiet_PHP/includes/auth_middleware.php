@@ -116,8 +116,10 @@ function loginUserById(int $userId, ?PDO $pdo = null): bool
         return false;
     }
 
-    // Regenerate session id to protect against session fixation
-    session_regenerate_id(true);
+    // Regenerate session id safely to protect against session fixation
+    if (!headers_sent() && session_status() === PHP_SESSION_ACTIVE) {
+        session_regenerate_id(true);
+    }
 
     $_SESSION['user_id'] = (int)$user['id'];
     $_SESSION['user_name'] = $user['full_name'];
