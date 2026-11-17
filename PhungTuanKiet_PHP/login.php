@@ -6,17 +6,18 @@ declare(strict_types=1);
  * Handmade and Art Products Marketplace Platform
  */
 
-$pageTitle = 'Sign In & Demo Switcher - Artisan Haven';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/security.php';
+require_once __DIR__ . '/includes/auth_middleware.php';
 
 $pdo = getDbConnection();
 $errors = [];
 
-// Handle POST sign-in or quick-switch
+// Handle POST sign-in or quick-switch BEFORE any HTML output
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     requireCsrfToken();
 
-    // Quick switch demo button pressed
+    // 1. Quick switch demo button pressed
     if (!empty($_POST['quick_login_id']) && is_numeric($_POST['quick_login_id'])) {
         $quickId = (int)$_POST['quick_login_id'];
         if (loginUserById($quickId, $pdo)) {
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Failed to switch to target account. The account may be locked or inactive.';
         }
     } else {
-        // Standard email/password login
+        // 2. Standard email/password login
         $email = sanitizeInput($_POST['email'] ?? '');
         $password = (string)($_POST['password'] ?? '');
 
@@ -67,19 +68,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fetch demo persona accounts for quick buttons
 $demoUsersStmt = $pdo->query("SELECT id, full_name, email, role, status FROM users WHERE id IN (1, 2, 6, 8, 9) ORDER BY FIELD(role, 'admin', 'seller', 'buyer'), id ASC");
 $demoUsers = $demoUsersStmt->fetchAll();
+
+// HTML Layout starts here AFTER all headers and redirects are completed
+$pageTitle = 'Sign In & Demo Switcher - Artisan Haven';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
-            <div class="card card-custom p-4 p-md-5">
+            <div class="card card-artisan p-4 p-md-5 border-0 shadow-sm bg-white">
                 <div class="text-center mb-4">
-                    <div class="display-6 font-serif text-brand"><i class="bi bi-shield-lock me-2 text-warning"></i>Sign In</div>
+                    <div class="display-6 font-serif text-dark mb-2">
+                        <i class="bi bi-shield-lock-fill text-warning me-2"></i>Sign In
+                    </div>
                     <p class="text-muted small">Access your Artisan Haven account or use 1-click academic demo personas below.</p>
                 </div>
 
                 <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger shadow-sm">
+                    <div class="alert alert-danger shadow-sm border-0 rounded-3">
                         <ul class="mb-0 ps-3">
                             <?php foreach ($errors as $err): ?>
                                 <li><?= e($err) ?></li>
@@ -92,46 +99,58 @@ $demoUsers = $demoUsersStmt->fetchAll();
                 <form action="login.php" method="POST" class="mb-4">
                     <?= csrfField() ?>
                     <div class="mb-3">
-                        <label for="email" class="form-label fw-semibold">Email Address</label>
+                        <label for="email" class="form-label fw-semibold small text-uppercase">Email Address</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                            <span class="input-group-text bg-light border"><i class="bi bi-envelope"></i></span>
                             <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" value="<?= e($_POST['email'] ?? '') ?>" required>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">Password</label>
+                        <label for="password" class="form-label fw-semibold small text-uppercase">Password</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                            <span class="input-group-text bg-light border"><i class="bi bi-key"></i></span>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
                         </div>
-                        <div class="form-text">Default demo password for seeded users is <code>Password123@</code></div>
+                        <div class="form-text small">Default demo password for seeded users is <code>Password123@</code></div>
                     </div>
 
-                    <button type="submit" class="btn btn-brand w-100 py-2">
+                    <button type="submit" class="btn btn-brand-primary w-100 py-2 fs-6">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Account
                     </button>
                 </form>
 
-                <hr class="my-4 text-muted">
+                <hr class="my-4" style="border-color: #ede4d8;">
 
                 <!-- 1-Click Persona Quick Switcher -->
                 <div class="mb-2">
                     <h6 class="fw-bold text-uppercase small text-muted text-center tracking-wide mb-3">
-                        <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Demo Persona Switcher
+                        <i class="bi bi-lightning-charge-fill text-warning me-1"></i> 1-Click Academic Persona Switcher
                     </h6>
                     <div class="d-grid gap-2">
                         <?php foreach ($demoUsers as $du): ?>
+                            <?php
+                            $roleColor = match ($du['role']) {
+                                'admin' => 'danger',
+                                'seller' => 'success',
+                                default => 'primary'
+                            };
+                            $badgeLabel = strtoupper($du['role']);
+                            if ($du['status'] === 'locked') {
+                                $badgeLabel = 'LOCKED USER';
+                                $roleColor = 'dark';
+                            }
+                            ?>
                             <form action="login.php" method="POST">
                                 <?= csrfField() ?>
                                 <input type="hidden" name="quick_login_id" value="<?= (int)$du['id'] ?>">
-                                <button type="submit" class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center py-2 px-3">
+                                <button type="submit" class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center py-2 px-3 bg-white rounded-3 shadow-xs">
                                     <div>
                                         <div class="fw-bold text-dark"><?= e($du['full_name']) ?></div>
-                                        <small class="text-muted"><?= e($du['email']) ?></small>
+                                        <small class="text-muted font-monospace"><?= e($du['email']) ?></small>
                                     </div>
-                                    <span class="badge bg-<?= ($du['role'] === 'admin') ? 'danger' : (($du['role'] === 'seller') ? 'success' : 'primary') ?> text-uppercase">
-                                        <?= e($du['role']) ?>
+                                    <span class="badge bg-<?= $roleColor ?> text-uppercase px-2 py-1">
+                                        <?= e($badgeLabel) ?>
                                     </span>
                                 </button>
                             </form>

@@ -144,16 +144,16 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- 1. Users (Admin, Sellers, Buyers)
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`, `status`, `created_at`) VALUES
-(1, 'admin', 'admin@artisanmarketplace.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'System Administrator', 'admin', 'active', '2026-01-10 08:00:00'),
-(2, 'potter_elena', 'elena@potterycraft.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Elena Rostova', 'seller', 'active', '2026-01-15 09:30:00'),
-(3, 'knit_clara', 'clara@yarnstudio.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Clara Vance', 'seller', 'active', '2026-02-01 10:15:00'),
-(4, 'wood_arthur', 'arthur@woodcraft.org', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Arthur Pendelton', 'seller', 'active', '2026-02-10 11:20:00'),
-(5, 'silver_maya', 'maya@silverjewelry.net', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Maya Lin', 'buyer', 'active', '2026-03-01 14:00:00'), -- Applied for seller, currently pending
-(6, 'buyer_john', 'john.doe@gmail.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'John Doe', 'buyer', 'active', '2026-03-05 15:30:00'),
-(7, 'buyer_sarah', 'sarah.connor@yahoo.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Sarah Connor', 'buyer', 'active', '2026-03-12 16:45:00'),
-(8, 'buyer_alex', 'alex.spencer@outlook.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Alex Spencer', 'buyer', 'active', '2026-03-20 18:00:00'),
-(9, 'locked_user', 'spammer@fakebot.io', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'Bot Spammer', 'buyer', 'locked', '2026-03-22 03:10:00'),
-(10, 'leather_david', 'david@leatherworks.com', '$2y$10$wE9sI/bF0.l6u9Q4wW1.9eC82x6F7t7/jZq98hV8O6I0hG6x0hC1W', 'David Miller', 'buyer', 'active', '2026-03-25 10:00:00'); -- Applied for seller, currently pending
+(1, 'admin', 'admin@artisanmarketplace.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'System Administrator', 'admin', 'active', '2026-01-10 08:00:00'),
+(2, 'potter_elena', 'elena@potterycraft.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Elena Rostova', 'seller', 'active', '2026-01-15 09:30:00'),
+(3, 'knit_clara', 'clara@yarnstudio.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Clara Vance', 'seller', 'active', '2026-02-01 10:15:00'),
+(4, 'wood_arthur', 'arthur@woodcraft.org', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Arthur Pendelton', 'seller', 'active', '2026-02-10 11:20:00'),
+(5, 'silver_maya', 'maya@silverjewelry.net', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Maya Lin', 'buyer', 'active', '2026-03-01 14:00:00'), -- Applied for seller, currently pending
+(6, 'buyer_john', 'john.doe@gmail.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'John Doe', 'buyer', 'active', '2026-03-05 15:30:00'),
+(7, 'buyer_sarah', 'sarah.connor@yahoo.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Sarah Connor', 'buyer', 'active', '2026-03-12 16:45:00'),
+(8, 'buyer_alex', 'alex.spencer@outlook.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Alex Spencer', 'buyer', 'active', '2026-03-20 18:00:00'),
+(9, 'locked_user', 'spammer@fakebot.io', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'Bot Spammer', 'buyer', 'locked', '2026-03-22 03:10:00'),
+(10, 'leather_david', 'david@leatherworks.com', '$2y$10$3UR4c19BoOkBd9Nd2L6ACeH1i7gSyLJ8PJz7oO5pOrxIDWLviF6na', 'David Miller', 'buyer', 'active', '2026-03-25 10:00:00'); -- Applied for seller, currently pending
 
 -- 2. Seller Profiles
 INSERT INTO `seller_profiles` (`id`, `user_id`, `store_name`, `bio`, `craft_specialty`, `phone`, `status`, `created_at`) VALUES

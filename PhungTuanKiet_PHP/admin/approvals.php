@@ -6,9 +6,13 @@ declare(strict_types=1);
  * Handmade and Art Products Marketplace Platform
  */
 
-$adminTitle = 'Approvals Center - Artisan Admin';
-$activePage = 'approvals';
-require_once __DIR__ . '/includes/admin_header.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../includes/security.php';
+require_once __DIR__ . '/../../includes/auth_middleware.php';
+
+// Enforce role === 'admin'
+$adminUser = requireAdmin('/LearningPHP/PhungTuanKiet_PHP/login.php');
+$pdo = getDbConnection();
 
 $currentTab = sanitizeInput($_GET['tab'] ?? 'sellers');
 if (!in_array($currentTab, ['sellers', 'products'], true)) {
@@ -79,6 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+$adminTitle = 'Approvals Center - Artisan Admin';
+$activePage = 'approvals';
+require_once __DIR__ . '/includes/admin_header.php';
 
 // 1. Fetch Pending Sellers
 $sellersStmt = $pdo->query("

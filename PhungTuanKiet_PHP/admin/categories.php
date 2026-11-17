@@ -6,9 +6,13 @@ declare(strict_types=1);
  * Handmade and Art Products Marketplace Platform
  */
 
-$adminTitle = 'Category Management - Artisan Admin';
-$activePage = 'categories';
-require_once __DIR__ . '/includes/admin_header.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../includes/security.php';
+require_once __DIR__ . '/../../includes/auth_middleware.php';
+
+// Enforce role === 'admin'
+$adminUser = requireAdmin('/LearningPHP/PhungTuanKiet_PHP/login.php');
+$pdo = getDbConnection();
 
 // Handle POST operations (Create, Update, Delete)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -115,6 +119,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+$adminTitle = 'Category Management - Artisan Admin';
+$activePage = 'categories';
+require_once __DIR__ . '/includes/admin_header.php';
 
 // Fetch all categories with computed product counts
 $stmt = $pdo->query("

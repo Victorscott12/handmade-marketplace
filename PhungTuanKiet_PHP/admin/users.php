@@ -6,9 +6,13 @@ declare(strict_types=1);
  * Handmade and Art Products Marketplace Platform
  */
 
-$adminTitle = 'User Management - Artisan Admin';
-$activePage = 'users';
-require_once __DIR__ . '/includes/admin_header.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../includes/security.php';
+require_once __DIR__ . '/../../includes/auth_middleware.php';
+
+// Enforce Admin Role
+$adminUser = requireAdmin('/LearningPHP/PhungTuanKiet_PHP/login.php');
+$pdo = getDbConnection();
 
 // Handle Lock / Unlock Action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_status') {
@@ -51,6 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     header('Location: users.php');
     exit;
 }
+
+$adminTitle = 'User Management - Artisan Admin';
+$activePage = 'users';
+require_once __DIR__ . '/includes/admin_header.php';
 
 // Filters & Search handling
 $searchKeyword = sanitizeInput($_GET['q'] ?? '');
