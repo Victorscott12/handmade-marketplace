@@ -1,0 +1,65 @@
+/* CSS dùng chung của cả nhóm. Muốn đổi màu chủ đạo thì sửa biến --brand. */
+:root {
+    --brand: #b5651d;        /* màu đất nung */
+    --brand-dark: #8f4f16;
+    --brand-soft: #f6ede4;
+    --bs-body-font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-link-color: var(--brand);
+    --bs-link-hover-color: var(--brand-dark);
+    --bs-link-color-rgb: 181, 101, 29;
+    --bs-link-hover-color-rgb: 143, 79, 22;
+}
+
+body { background: #faf7f3; }
+
+.text-brand { color: var(--brand) !important; }
+.bg-brand-soft { background: var(--brand-soft) !important; }
+
+.btn-brand {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--brand);
+    --bs-btn-border-color: var(--brand);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--brand-dark);
+    --bs-btn-hover-border-color: var(--brand-dark);
+    --bs-btn-active-bg: var(--brand-dark);
+    --bs-btn-active-border-color: var(--brand-dark);
+    --bs-btn-disabled-bg: var(--brand);
+    --bs-btn-disabled-border-color: var(--brand);
+}
+
+.btn-outline-brand {
+    --bs-btn-color: var(--brand);
+    --bs-btn-border-color: var(--brand);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--brand);
+    --bs-btn-hover-border-color: var(--brand);
+    --bs-btn-active-bg: var(--brand-dark);
+    --bs-btn-active-border-color: var(--brand-dark);
+}
+
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 .2rem rgba(181, 101, 29, .2);
+}
+.form-check-input:checked { background-color: var(--brand); border-color: var(--brand); }
+
+.card { border-color: #eee3d8; }
+
+/* Thẻ sản phẩm */
+.product-card { transition: transform .15s ease, box-shadow .15s ease; }
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1.25rem rgba(0, 0, 0, .08); }
+.product-card .ratio img { object-fit: cover; }
+
+/* Trang đăng nhập/đăng ký */
+.auth-card { max-width: 460px; margin: 0 auto; }
+
+/* Ô chọn loại tài khoản khi đăng ký */
+.account-type .btn-check:checked + label {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    color: var(--brand-dark);
+}
+.account-type label { cursor: pointer; }
+
+.stat-card .bi { font-size: 1.75rem; color: var(--brand); }
